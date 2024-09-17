@@ -64,15 +64,15 @@ module.exports = {
                 "100%": { transform: "rotate(360deg)" }
             },
             scaleUp: {
-                "0%": { transform: "scale(0.8)" },  // Removed "deg" from scale
+                "0%": { transform: "scale(0.8)" },  
                 "50%": { transform: "scale(1.2)" },
                 "100%": { transform: "scale(0.8)" }
             }
         },
         animation: {
-            movingY: "move 3s linear infinite",      // Fixed typo: "infinate" to "infinite"
-            rotating: "rotate 15s linear infinite",  // Fixed typo
-            scalingUp: "scaleUp 15s linear infinite" // Fixed typo
+            movingY: "move 3s linear infinite",      
+            rotating: "rotate 15s linear infinite",  
+            scalingUp: "scaleUp 15s linear infinite" 
         },
         
         container: {
