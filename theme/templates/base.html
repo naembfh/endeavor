@@ -1,0 +1,105 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Django Tailwind</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% tailwind_css %}
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-brands/css/uicons-brands.css'>
+</head>
+
+<body class="">
+    <!-- Header -->
+    <header id="navbar" class="bg-green-950 fixed w-full top-0 left-0 z-50">
+        <nav class="container flex items-center justify-between h-16 sm:h-20">
+            <div class="font-Lobster sm:text-2xl">Endeavor</div>
+            <div id="nav-menu"
+                class="absolute top-0 left-[-100%] min-h[80vh] w-full bg-gray-950/8 backdrop-blur-sm flex items-center justify-center duration-300 overflow-hidden lg:static lg:min-h-fit lg:w-auto">
+                <ul class="flex flex-col items-center gap-8 lg:flex-row">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#popular" class="nav-link">Popular</a></li>
+                    <li><a href="#review" class="nav-link">Review</a></li>
+                </ul>
+                <div class="absolute bottom-0 -right-10 opacity-90 lg:hidden">
+                    <img src="{% static 'img/leaf-1.png' %}" alt="leaf_image" class="w-32">
+                </div>
+                <div class="absolute -top-5 -left-5 rotate-90 opacity-90 lg:hidden">
+                    <img src="{% static 'img/leaf-2.png' %}" alt="leaf_image" class="w-32">
+                </div>
+                <div class="text-xl text-white sm:text-3xl cursor-pointer z-50 lg:hidden">
+                    <i class="fi fi-rr-line-width" id="hamburger"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Home -->
+        <section id="home" class="relative">
+            <!-- blob-1 -->
+            <div
+                class="w-64 h-64 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute top-1/2 left-1/2 transform translate-x-1/2 -translate-y-1/2">
+            </div>
+
+            <!-- blob-2 -->
+            <div class="w-64 h-64 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute bottom-0 right-0">
+            </div>
+
+            <div class="container">
+                <div class="flex flex-col items-center gap-5 lg:flex-row">
+                    <!-- Content -->
+                    <div class="w-full space-y-5 lg:w-1/2">
+                        <h1><span class="text-yellow-500">Plants</span> make a <br>
+                            positive
+                            <span class="text-yellow-500">impact</span> on <br>
+                            your environment
+                        </h1>
+                        <p class="text-slate-300 font-Lobster">Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Distinctio fugiat eveniet, reprehenderit veritatis aut explicabo voluptatum ullam itaque
+                            tenetur numquam!
+                        </p>
+                        <div class="flex flex-col gap-2 sm:flex-row md:gap-4 lg:pt-5 xl:pt-10">
+                            <button class="btn"><span>Shop Now</span>
+                                <i class="fi fi-rr-plant-care"></i></button>
+                            <button class="btn btn_outline">
+                                <span>Know More</span>
+                                <i class="ri-leaf-line"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs font-lobster text-slate-300">You will get 30-days free trial.</p>
+                        <div class="flex items-center gap-5 text-lg lg:pt-10">
+                            <i class="fi fi-brands-facebook text-slate-300 hover:text-yellow-500 duration-500 cursor-pointer text-base"></i>
+                            <i class="fi fi-brands-instagram text-slate-300 hover:text-yellow-500 duration-500 cursor-pointer text-base"></i>
+                        </div>
+                    </div>
+
+                    <!-- Image -->
+                    <div class="w-full relative lg:w-1/2">
+                        <img src="{% static 'img/home.png' %}" alt="" srcset="">
+                        <!-- Leaf -->
+                        <div class="absolute -top-10 right-0 opacity-30 animate-movingY xl:top-5">
+                            <i class="fi fi-rr-leaf-maple text-6xl text-yellow-500"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 opacity-30 xl:bottom-11 animate-rotating">
+                            <i class="fi fi-rr-three-leaf-clover text-6xl text-yellow-500"></i>
+                        </div>
+                        <div class="absolute -top-10 left-5 opacity-30 lg:block animate-scalingUp">
+                            <i class="fi fi-rr-plant-growth text-6xl text-yellow-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'js/navbar.js' %}"></script>
+</body>
+
+</html>
