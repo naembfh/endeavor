@@ -5,10 +5,11 @@
         <div id="nav-menu"
             class="absolute top-0 left-[-100%] min-h[80vh] w-full bg-gray-950/8 backdrop-blur-sm flex items-center justify-center duration-300 overflow-hidden lg:static lg:min-h-fit lg:w-auto">
             <ul class="flex flex-col items-center gap-8 lg:flex-row">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+                <!-- <li><a href="#about" class="nav-link">About</a></li> -->
                 <li><a href="#popular" class="nav-link">Popular</a></li>
                 <li><a href="#review" class="nav-link">Review</a></li>
+                <li><a href="#cart" class="nav-link">Cart</a></li>
             </ul>
             <div class="absolute bottom-0 -right-10 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-1.png' %}" alt="leaf_image" class="w-32">

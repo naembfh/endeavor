@@ -23,10 +23,12 @@
                 <div class="flex flex-col gap-2 sm:flex-row md:gap-4 lg:pt-5 xl:pt-10">
                     <button class="btn"><span>Shop Now</span>
                         <i class="fi fi-rr-plant-care"></i></button>
-                    <button class="btn btn_outline">
-                        <span>Know More</span>
-                        <i class="ri-leaf-line"></i>
-                    </button>
+                        <button class="btn btn_outline">
+                            <a href="{% url 'about' %}" class="flex items-center gap-2">
+                                <span>Know More</span>
+                                <i class="ri-leaf-line"></i>  <!-- This is your icon class -->
+                            </a>
+                        </button>
                 </div>
                 <p class="text-xs font-lobster text-slate-300">You will get 30-days free trial.</p>
                 <div class="flex items-center gap-5 text-lg lg:pt-10">

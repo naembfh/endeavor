@@ -1,4 +1,7 @@
-{% load static %}
+{% extends "base.html" %}
 
-{% include "include/home/heroSection.html" %}
-{% include "include/home/services.html" %}
+{% block content %}
+    {% include "include/home/heroSection.html" %}
+    {% include "include/home/services.html" %}
+    {% include "include/plants.html" %}
+{% endblock %}

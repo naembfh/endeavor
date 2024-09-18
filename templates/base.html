@@ -20,9 +20,9 @@
 
     <!-- Main Section -->
     <main>
-
-       {% include "include/home/home.html" %}
-
+        {% block content %}
+        <!-- Default content can go here -->
+        {% endblock %}
     </main>
 
     <script src="{% static 'js/navbar.js' %}"></script>
