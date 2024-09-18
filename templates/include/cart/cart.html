@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fixed inset-0 top-5 left-2 w-full max-h-screen mb-20 z-50">
+    <!-- Outer container takes full width on small screens and 2/3 width on larger screens -->
+    <div class="bg-white bg-opacity-10 backdrop-blur-lg shadow-lg w-full md:w-4/5 lg:w-2/3 xl:w-2/3 p-6 transform translate-y-16 transition-transform duration-300 rounded-lg z-50">
+        <button 
+            class="absolute top-4 right-4 text-gray-300 hover:text-white z-70" 
+            onclick="window.location.href='/'">
+            <i class="fi fi-rr-cross-circle text-4xl"></i>
+        </button>
+
+        <!-- Cart Details and Summary -->
+        <div class="mt-12 flex flex-col lg:flex-row gap-6">
+            <!-- Cart Items -->
+            <div class="w-full lg:w-3/5 space-y-6 max-h-[calc(100vh-10rem)] cart-items">
+                {% for item in cart_items %}
+                <div class="flex items-center justify-between border border-gray-300 rounded-lg p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-24 h-24 object-cover rounded-md" />
+                    <div class="flex-grow mx-4">
+                        <h3 class="text-lg font-semibold text-gray-300 truncate">{{ item.name }}</h3>
+                        <p class="text-lg font-bold text-gray-300">${{ item.price }}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800">
+                            <i class="fi fi-rr-minus-circle"></i>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-500">{{ item.quantity }}</span>
+                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800">
+                            <i class="fi fi-rr-add"></i>
+                        </button>
+                        <button class="bg-red-500 px-2 py-1 rounded-sm text-xl ml-2 hover:bg-red-600">
+                            <i class="fi fi-rr-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+
+            <!-- Order Summary -->
+            <div class="w-full lg:w-2/5 bg-white bg-opacity-20 backdrop-blur-lg shadow-md rounded-lg p-6 flex flex-col max-h-[25rem] lg:max-h-[25rem] lg:justify-center overflow-hidden">
+                <h1 class="text-3xl font-bold text-gray-200">Order Summary</h1>
+                <p class="text-sm text-gray-300 mt-2">Items: {{ total_items }}</p>
+                <p class="text-sm text-gray-300 mt-2">Subtotal: ${{ subtotal|floatformat:2 }}</p>
+                <p class="text-sm text-gray-300 mt-2">Tax: ${{ tax_amount|floatformat:2 }}</p>
+                <h3 class="text-xl font-semibold text-gray-200 mt-4">Grand Total: ${{ total_amount|floatformat:2 }}</h3>
+
+                <div class="mt-6 flex flex-col space-y-4">
+                    <button class="bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600 z-50">
+                        <span>Clear Cart</span>
+                        <i class="fi fi-rr-trash"></i>
+                    </button>
+                    <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl flex justify-between items-center text-white hover:bg-yellow-600 z-50">
+                        <span>Proceed to Checkout</span>
+                        <i class="fi fi-rr-credit-card"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* Hide scrollbar but allow scrolling */
+.cart-items {
+    overflow: auto;
+}
+
+.cart-items::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.cart-items {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+</style>
+
+<script>
+       // Function to get a cookie
+       function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+    let cart = JSON.parse(getCookie('cart')) || {};
+    console.log(cart)
+</script>
+
+{% endblock %}

@@ -23,12 +23,85 @@
             </div>
             <div class="flex items-center justify-between">
                 <p class="text-xl">{{ plant.price }} RM</p>
-                <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl">
-                    <i class="fi fi-rr-shopping-cart"></i>
-                </button>
+                <button 
+                class="bg-yellow-500 px-2 py-1 rounded-sm text-xl add-to-cart"
+                data-plant-id="{{ plant.id }}"
+            >
+                <i class="fi fi-rr-shopping-cart"></i>
+            </button>
+            <div id="csrf-container">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            </div>
+            
             </div>
         </div>
         {% endfor %}
     </div>
 </section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie
+    function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // Function to update cart badge
+    function updateCartBadge() {
+        let cart = JSON.parse(getCookie('cart')) || {};
+        console.log('Cart:', cart);  // Debugging
+        let totalQuantity = Object.values(cart).reduce((acc, quantity) => acc + quantity, 0);
+        console.log('Total Quantity:', totalQuantity);  // Debugging
+
+        let badgeElement = document.getElementById('cart-badge');
+        if (badgeElement) {
+            badgeElement.textContent = totalQuantity;
+            console.log('Updated Badge Content:', badgeElement.textContent);  // Debugging
+        } else {
+            console.error('Cart badge element not found');  // Error handling
+        }
+    }
+
+    // Initialize cart badge
+    updateCartBadge();
+
+    // Event listener for Add to Cart buttons
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const plantId = this.getAttribute('data-plant-id');
+            console.log(plantId)
+            let cart = JSON.parse(getCookie('cart')) || {};
+            console.log(cart)
+            if (cart[plantId]) {
+                cart[plantId] += 1;  // Increase quantity if plant already in cart
+            } else {
+                cart[plantId] = 1;  // Add new plant with quantity 1
+            }
+
+            setCookie('cart', JSON.stringify(cart), 7); // Store cart in cookies for 7 days
+
+            // Update cart badge immediately
+            updateCartBadge();
+        });
+    });
+});
+
+</script>
 {% endblock %}
