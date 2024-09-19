@@ -5,7 +5,15 @@
     <div class="flex flex-col items-center gap-3 text-center mb-10 md:mb-20">
         <h2 class="title">Your Choice Plant</h2>
         <p class="max-w-2xl">Follow instructions for more</p>
+        
+        <!-- Conditionally show search bar only on shop page -->
+        {% if current_path == '/shop/' %}
+        <div class="w-full flex justify-center my-5">
+            <input type="text" placeholder="Search plants..." class="w-1/2 p-2 border border-gray-300 rounded">
+        </div>
+        {% endif %}
     </div>
+
     <div class="container w-full grid grid-cols-1 gap-x-8 gap-y-36 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {% for plant in plants %}
         <div class="card bg-green-950 p-10 pt-24 rounded-md relative">
@@ -23,85 +31,126 @@
             </div>
             <div class="flex items-center justify-between">
                 <p class="text-xl">{{ plant.price }} RM</p>
-                <button 
-                class="bg-yellow-500 px-2 py-1 rounded-sm text-xl add-to-cart"
-                data-plant-id="{{ plant.id }}"
-            >
-                <i class="fi fi-rr-shopping-cart"></i>
-            </button>
-            <div id="csrf-container">
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-            </div>
-            
+                <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl add-to-cart" data-plant-id="{{ plant.id }}">
+                    <i class="fi fi-rr-shopping-cart"></i>
+                </button>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Conditionally add pagination only on shop page -->
+    {% if current_path == '/shop/' %}
+    <div class="flex justify-center mt-8">
+        <nav aria-label="Page navigation">
+            <ul class="inline-flex items-center -space-x-px">
+                {% if page_obj.has_previous %}
+                <li>
+                    <a href="?page=1" class="px-3 py-2 mx-1 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-yellow-500">First</a>
+                </li>
+                <li>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 mx-1 text-sm font-medium text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 hover:text-yellow-500">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                <li>
+                    <a href="?page={{ num }}" class="px-3 py-2 mx-1 text-sm font-medium border border-gray-300 {% if page_obj.number == num %}bg-yellow-500 text-white{% else %}bg-white text-gray-900{% endif %} hover:bg-gray-100 hover:text-yellow-500">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li>
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 mx-1 text-sm font-medium text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 hover:text-yellow-500">Next</a>
+                </li>
+                <li>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-2 mx-1 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-yellow-500">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
 </section>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // Function to set a cookie
-    function setCookie(name, value, days) {
-        let expires = "";
-        if (days) {
-            let date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
-
-    // Function to get a cookie
-    function getCookie(name) {
-        let nameEQ = name + "=";
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
-    }
-
-    // Function to update cart badge
-    function updateCartBadge() {
-        let cart = JSON.parse(getCookie('cart')) || {};
-        console.log('Cart:', cart);  // Debugging
-        let totalQuantity = Object.values(cart).reduce((acc, quantity) => acc + quantity, 0);
-        console.log('Total Quantity:', totalQuantity);  // Debugging
-
-        let badgeElement = document.getElementById('cart-badge');
-        if (badgeElement) {
-            badgeElement.textContent = totalQuantity;
-            console.log('Updated Badge Content:', badgeElement.textContent);  // Debugging
-        } else {
-            console.error('Cart badge element not found');  // Error handling
-        }
-    }
-
-    // Initialize cart badge
-    updateCartBadge();
-
-    // Event listener for Add to Cart buttons
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            const plantId = this.getAttribute('data-plant-id');
-            console.log(plantId)
-            let cart = JSON.parse(getCookie('cart')) || {};
-            console.log(cart)
-            if (cart[plantId]) {
-                cart[plantId] += 1;  // Increase quantity if plant already in cart
-            } else {
-                cart[plantId] = 1;  // Add new plant with quantity 1
+      
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
             }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
 
-            setCookie('cart', JSON.stringify(cart), 7); // Store cart in cookies for 7 days
+        
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
 
-            // Update cart badge immediately
-            updateCartBadge();
+        
+        function updateCartBadge() {
+            let cart = JSON.parse(getCookie('cart')) || {};
+            console.log('Cart:', cart); 
+            let totalQuantity = Object.values(cart).reduce((acc, quantity) => acc + quantity, 0);
+            console.log('Total Quantity:', totalQuantity);  
+
+            let badgeElement = document.getElementById('cart-badge');
+            if (badgeElement) {
+                badgeElement.textContent = totalQuantity;
+                console.log('Updated Badge Content:', badgeElement.textContent);  
+            } else {
+                console.error('Cart badge element not found');  
+            }
+        }
+
+       
+        updateCartBadge();
+
+        
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const plantId = this.getAttribute('data-plant-id');
+                console.log(plantId)
+                let cart = JSON.parse(getCookie('cart')) || {};
+                console.log(cart)
+                if (cart[plantId]) {
+                    cart[plantId] += 1;  
+                } else {
+                    cart[plantId] = 1; 
+                }
+
+                setCookie('cart', JSON.stringify(cart), 7); 
+
+               
+                updateCartBadge();
+            });
+        });
+
+      
+        document.getElementById('search').addEventListener('input', function() {
+            let query = this.value.toLowerCase();
+            document.querySelectorAll('.card').forEach(card => {
+                let plantName = card.querySelector('h3').textContent.toLowerCase();
+                if (plantName.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     });
-});
-
 </script>
 {% endblock %}

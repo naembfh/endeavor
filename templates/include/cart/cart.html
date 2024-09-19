@@ -1,7 +1,7 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="fixed inset-0 top-5 left-2 w-full max-h-screen mb-20 z-50">
-    <!-- Outer container takes full width on small screens and 2/3 width on larger screens -->
     <div class="bg-white bg-opacity-10 backdrop-blur-lg shadow-lg w-full md:w-4/5 lg:w-2/3 xl:w-2/3 p-6 transform translate-y-16 transition-transform duration-300 rounded-lg z-50">
         <button 
             class="absolute top-4 right-4 text-gray-300 hover:text-white z-70" 
@@ -21,21 +21,23 @@
                         <p class="text-lg font-bold text-gray-300">${{ item.price }}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800">
+                        <!-- Minus Button -->
+                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 minus-btn" data-id="{{ item.id }}">
                             <i class="fi fi-rr-minus-circle"></i>
                         </button>
-                        <span class="text-lg font-semibold text-gray-500">{{ item.quantity }}</span>
-                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800">
+                        <span class="text-lg font-semibold">{{ item.quantity }}</span>
+                        <!-- Add Button -->
+                        <button class="bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 add-btn" data-id="{{ item.id }}">
                             <i class="fi fi-rr-add"></i>
                         </button>
-                        <button class="bg-red-500 px-2 py-1 rounded-sm text-xl ml-2 hover:bg-red-600">
+                        <!-- Trash Button -->
+                        <button class="bg-red-500 px-2 py-1 rounded-sm text-xl ml-2 hover:bg-red-600 trash-btn" data-id="{{ item.id }}">
                             <i class="fi fi-rr-trash"></i>
                         </button>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            
 
             <!-- Order Summary -->
             <div class="w-full lg:w-2/5 bg-white bg-opacity-20 backdrop-blur-lg shadow-md rounded-lg p-6 flex flex-col max-h-[25rem] lg:max-h-[25rem] lg:justify-center overflow-hidden">
@@ -46,7 +48,7 @@
                 <h3 class="text-xl font-semibold text-gray-200 mt-4">Grand Total: ${{ total_amount|floatformat:2 }}</h3>
 
                 <div class="mt-6 flex flex-col space-y-4">
-                    <button class="bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600 z-50">
+                    <button class="clear_cart bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600 z-50">
                         <span>Clear Cart</span>
                         <i class="fi fi-rr-trash"></i>
                     </button>
@@ -59,37 +61,110 @@
         </div>
     </div>
 </div>
+
 <style>
-    /* Hide scrollbar but allow scrolling */
-.cart-items {
-    overflow: auto;
-}
+  
+    .cart-items {
+        overflow: auto;
+    }
 
-.cart-items::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-}
+    .cart-items::-webkit-scrollbar {
+        display: none;
+    }
 
-.cart-items {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-}
-
+    .cart-items {
+        -ms-overflow-style: none; 
+        scrollbar-width: none; 
+    }
 </style>
 
 <script>
-       // Function to get a cookie
-       function getCookie(name) {
-        let nameEQ = name + "=";
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    document.addEventListener('DOMContentLoaded', function () {
+     
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
-        return null;
-    }
-    let cart = JSON.parse(getCookie('cart')) || {};
-    console.log(cart)
+
+        
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+       
+        function clearCookie(name) {
+            setCookie(name, "", -1);
+        }
+
+        // Function to update cart badge
+        function updateCartBadge() {
+            let cart = JSON.parse(getCookie('cart')) || {};
+            let totalQuantity = Object.values(cart).reduce((acc, quantity) => acc + quantity, 0);
+            let badgeElement = document.getElementById('cart-badge');
+            if (badgeElement) {
+                badgeElement.textContent = totalQuantity;
+            }
+        }
+
+        updateCartBadge();
+
+        // Function to update cart item quantity
+        function updateCart(plantId, change) {
+            let cart = JSON.parse(getCookie('cart')) || {};
+            if (cart[plantId]) {
+                cart[plantId] += change;
+                if (cart[plantId] <= 0) {
+                    delete cart[plantId];  
+                }
+            } else if (change > 0) {
+                cart[plantId] = 1;  
+            }
+            setCookie('cart', JSON.stringify(cart), 7);  
+            updateCartBadge(); 
+            location.reload();  
+        }
+
+        
+        document.querySelectorAll('.add-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const plantId = this.getAttribute('data-id');
+                updateCart(plantId, 1); 
+            });
+        });
+
+        document.querySelectorAll('.minus-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const plantId = this.getAttribute('data-id');
+                updateCart(plantId, -1); 
+            });
+        });
+
+        document.querySelectorAll('.trash-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const plantId = this.getAttribute('data-id');
+                updateCart(plantId, -100); 
+            });
+        });
+
+      
+        document.querySelector('.clear_cart').addEventListener('click', function () {
+            clearCookie('cart'); 
+            updateCartBadge(); 
+            location.reload();
+        });
+    });
 </script>
 
 {% endblock %}

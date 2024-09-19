@@ -1,80 +1,77 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from .models import Plant
+from .models import Plant, Review
+import decimal
+import json
+from django.http import HttpRequest
+from django.core.paginator import Paginator
 
-# Example view function
-def index(request):
-    plants = Plant.objects.all()
+def index(request:HttpRequest):
     context = {
-        "plants" : plants,
+        'plants': Plant.objects.all(),
+        'reviews': Review.objects.all(),
+        'current_path': request.path, 
     }
     return render(request, 'include/home/home.html', context)
 
 def about(request):
     return render(request, 'include/about.html')
 
-
 def cart_view(request):
-    # Fake data for the cart
-    cart_items = [
-        {
-            'id': '1',
-            'name': 'Fitness Band',
-            'price': 59.99,
-            'quantity': 2,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-        {
-            'id': '2',
-            'name': 'Yoga Mat',
-            'price': 29.99,
-            'quantity': 1,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-        {
-            'id': '3',
-            'name': 'Yoga Mat',
-            'price': 29.99,
-            'quantity': 1,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-        {
-            'id': '4',
-            'name': 'Yoga Mat',
-            'price': 29.99,
-            'quantity': 1,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-        {
-            'id': '5',
-            'name': 'Yoga Mat',
-            'price': 29.99,
-            'quantity': 1,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-        {
-            'id': '6',
-            'name': 'Yoga Mat',
-            'price': 29.99,
-            'quantity': 1,
-            'image_url': 'https://via.placeholder.com/150'
-        },
-    ]
-    
-    # Fake order summary
-    subtotal = sum(item['price'] * item['quantity'] for item in cart_items)
-    tax_amount = subtotal * 0.1  # Assuming 10% tax
-    total_amount = subtotal + tax_amount
-    total_items = sum(item['quantity'] for item in cart_items)
+    # Get all plants
+    plants = Plant.objects.all()
 
-    # Pass the fake data to the template
+    # Get cart from cookies
+    cart_cookie = request.COOKIES.get('cart', '{}')
+    cart = json.loads(cart_cookie)
+
+    # Prepare context with cart items
+    cart_items = []
+    for plant_id, quantity in cart.items():
+        try:
+            plant = plants.get(id=plant_id)
+            cart_items.append({
+                'id': plant.id,
+                'name': plant.common_name,
+                'price': plant.price,
+                'quantity': quantity,
+                'image_url': plant.image.url
+            })
+        except Plant.DoesNotExist:
+            # Handle case where plant is not found
+            continue
+
+    # Calculate totals
+    total_items = sum(cart.values())
+    
+    # Convert prices and quantities to Decimal for accurate calculations
+    subtotal = sum(decimal.Decimal(item['price']) * decimal.Decimal(item['quantity']) for item in cart_items)
+    tax_rate = decimal.Decimal('0.07')  # Tax rate as Decimal
+    tax_amount = subtotal * tax_rate
+    total_amount = subtotal + tax_amount
+
     context = {
         'cart_items': cart_items,
+        'total_items': total_items,
         'subtotal': subtotal,
         'tax_amount': tax_amount,
-        'total_amount': total_amount,
-        'total_items': total_items,
+        'total_amount': total_amount
     }
 
     return render(request, 'include/cart/cart.html', context)
+
+
+def shop_view(request: HttpRequest):
+    plant_list = Plant.objects.all()
+    paginator = Paginator(plant_list, 4)  # Show 10 plants per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'plants': page_obj,
+        'page_obj': page_obj,
+        'current_path': request.path,
+    }
+    return render(request, 'include/plants.html', context)

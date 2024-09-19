@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="relative mb-20 md:mb-28 overflow-hidden">
+    <div class="absolute -top-8 -left-12 opacity-50">
+        <img class="w-40 md:w-52 xl:w-64" src="{% static 'img/leaf-4.png' %}" alt="">
+    </div>
+    <div class="flex flex-col items-center gap-3 text-center mb-10 md:mb-20">
+        <h2 class="title">Customer Review</h2>
+        <p class="max-w-2xl">Follow instruction for more</p>
+    </div>
+
+    <div class="container">
+        <div class="swiper py-12">
+            <ul class="swiper-wrapper mb-10">
+                {% for review in reviews %}
+                <li class="swiper-slide">
+                    <div class="flex flex-col gap-5 bg-green-900 rounded-md p-6">
+                        <p class="font-Lobster">{{ review.comment }}</p>
+                        <div class="flex items-center">
+                            <img class="w-12 h-12 rounded-full" src="{{ user.profile.get_profile_image }}" alt="User image" class="user-img">
+
+                            <div class="ml-2">
+                                <p class="text-yellow-500 uppercase">{{ review.user.username }}</p>
+                                <p>{{ review.author_role }}</p>
+                            </div>
+                            <i class="fi fi-rr-quote-right text-4xl ml-auto"></i>
+                        </div>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="swiper-slide">
+                    <div class="flex flex-col gap-5 bg-green-900 rounded-md p-6">
+                        <p class="font-Lobster">No reviews available.</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const swiper = new Swiper('.swiper', {
+        speed: 4,
+        spaceBetween: 30,
+        autoplay: {
+            delay: 3000,
+            disableInteraction: false
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+        },
+        grabCursor: true,
+        breakpoints: {
+            640: {
+                slidesPerView: 1
+            },
+            768: {
+                slidesPerView: 2
+            },
+            1024: {
+                slidesPerView: 3
+            }
+        }
+    });
+</script>
+{% endblock content %}
