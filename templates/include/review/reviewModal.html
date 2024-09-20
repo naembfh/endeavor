@@ -1,11 +1,12 @@
-<!-- Modal Container -->
+{% load static %}
+ 
 <div id="review-modal" class="fixed top-0 left-0 w-screen h-screen z-50 hidden border border-gray-300 rounded-lg p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
-    <div class="relative bg-green-900 bg-opacity-60 border border-green-300 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[420px] sm:max-w-[600px] lg:max-w-[984px] p-4 max-h-[90vh] overflow-auto shadow-lg rounded-2xl">
+    <div class="relative bg-green-900 bg-opacity-60 border border-green-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[420px] sm:max-w-[600px] lg:max-w-[984px] p-4 max-h-[90vh] overflow-auto shadow-lg rounded-2xl">
         <button
             class="absolute top-4 right-4 text-yellow-500 hover:text-red-500"
             onclick="closeModal()"
         >
-            Close
+        <i class="fi fi-rr-cross-circle text-4xl"></i>
         </button>
 
         {% if user.is_authenticated %}
@@ -23,10 +24,10 @@
                     
                         <!-- Select Rating -->
                         <div class="space-x-2 mb-4">
-                            <span>Select your rating:</span>
+                            <span class="text-yellow-500">Select your rating:</span>
                             <div id="rating-select" class="flex space-x-1">
                                 {% for i in "01234" %}
-                                    <i class="star-icon fi fi-sc-star text-gray-300 cursor-pointer" data-rating="{{ i }}"></i>
+                                    <i class=" fi fi-ss-star text-2xl text-gray-300 cursor-pointer" data-rating="{{ i }}"></i>
                                 {% endfor %}
                             </div>
                         </div>
@@ -35,11 +36,12 @@
                             <textarea
                                 name="comment"
                                 rows="4"
-                                class="border rounded-lg p-2 w-full"
+                                class="border border-gray-300 rounded-lg p-4 w-full resize-none text-gray-100 bg-green-500 placeholder-gray-100 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500"
                                 placeholder="Write your review here..."
                                 required
                             ></textarea>
                         </div>
+                        
                     
                         <!-- Visually hidden input for rating -->
                         <input class="sr-only" type="number" name="rating" min="1" max="5" required aria-invalid="true" id="id_rating" />
@@ -50,7 +52,7 @@
                 </div>
                 <!-- Plant Name and Description -->
                 <div class="p-5 lg:p-11 flex flex-col justify-center">
-                    <h2 id="plant-name" class="text-3xl lg:text-5xl mb-2 font-bold text-green-700"></h2>
+                    <h2 id="plant-name" class="text-3xl lg:text-5xl text-yellow-500 mb-2 font-bold"></h2>
                     <p id="plant-description" class="font-Lobster text-sm lg:text-base font-semibold mt-3"></p>
                 </div>
             </div>
@@ -61,6 +63,9 @@
                 <a href="" class="text-blue-500 underline">Log in here</a>.
             </p>
         {% endif %}
+        <div class="absolute bottom-0 left-0 opacity-20 pointer-events-none">
+            <img class="w-full lg:w-1/2" src="{% static 'img/floral-1.png' %}" alt="">
+        </div>
     </div>
 </div>
 
@@ -86,20 +91,20 @@
     // Function to update star styles
     function updateStarStyles(rating, state) {
         console.log(rating,state, 'update')
-        const stars = Array.from(document.querySelectorAll('.fi-sc-star'));
-        console.log(stars)
+        const stars = Array.from(document.querySelectorAll('.fi-ss-star'));
+        // console.log(stars)
         stars.forEach((star, index) => {
             if (index < rating) {
-                star.classList.add('selected');
-                star.classList.remove('hovered');
+                star.classList.add('text-yellow-500');
+                star.classList.remove('hover:text-yellow-500');
             } else {
-                star.classList.remove('selected');
+                star.classList.remove('text-yellow-500');
             }
 
             if (state === 'hovered' && index < rating) {
-                star.classList.add('hovered');
+                star.classList.add('hover:text-yellow-500');
             } else {
-                star.classList.remove('hovered');
+                star.classList.remove('hover:text-yellow-500');
             }
         });
     }
@@ -119,14 +124,14 @@
         const ratingInput = document.getElementById('id_rating');
 
         if (ratingSelect && ratingInput) {
-            const stars = Array.from(ratingSelect.querySelectorAll('.fi-sc-star'));
+            const stars = Array.from(ratingSelect.querySelectorAll('.fi-ss-star'));
 
             // Handle hover effect
             ratingSelect.addEventListener('mouseover', function(event) {
                 const hoveredStar = event.target;
              
 
-                if (hoveredStar && hoveredStar.classList.contains('fi-sc-star')) {
+                if (hoveredStar && hoveredStar.classList.contains('fi-ss-star')) {
                     const rating = parseInt(hoveredStar.getAttribute('data-rating')) + 1;
                     
                     updateStarStyles(rating, 'hovered');
@@ -143,7 +148,7 @@
                 const clickedStar = event.target;
                
 
-                if (clickedStar && clickedStar.classList.contains('fi-sc-star')) {
+                if (clickedStar && clickedStar.classList.contains('fi-ss-star')) {
                     const selectedRating = parseInt(clickedStar.getAttribute('data-rating')) + 1;
                 
                     ratingInput.value = selectedRating;

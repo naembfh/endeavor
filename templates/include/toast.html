@@ -1,0 +1,24 @@
+{% load static %} 
+<div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50 max-w-sm w-full sm:max-w-xs"></div>
+<script>
+    function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+
+    const toast = document.createElement('div');
+    toast.className = 'toast bg-gray-100/80 font-Lobster text-green-500 px-4 py-3 rounded shadow-md transition-opacity duration-300 opacity-100 backdrop-blur-md flex items-center space-x-2';
+    toast.innerHTML = `
+        <i class="fi fi-rr-clipboard-check text-xl"></i>
+        <span class="flex-1">${message}</span>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    
+    setTimeout(() => {
+        toast.classList.add('opacity-0'); 
+        setTimeout(() => {
+            toast.remove(); 
+        }, 300);
+    }, 3000); 
+}
+</script>

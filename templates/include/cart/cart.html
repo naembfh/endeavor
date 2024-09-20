@@ -1,13 +1,16 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-<div class="fixed inset-0 top-5 left-2 w-full max-h-screen mb-20 z-50">
-    <div class="bg-white bg-opacity-10 backdrop-blur-lg shadow-lg w-full md:w-4/5 lg:w-2/3 xl:w-2/3 p-6 transform translate-y-16 transition-transform duration-300 rounded-lg z-50">
+<div class="fixed top-16 left-4 w-full md:w-4/5 lg:w-2/3 xl:w-2/3 max-h-screen mb-20 z-40 "> <!-- Lower z-index -->
+    <div class="w-full transform translate-y-16 transition-transform duration-300 border border-gray-300 rounded-lg p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
         <button 
-            class="absolute top-4 right-4 text-gray-300 hover:text-white z-70" 
+            class="absolute top-4 right-4 text-gray-300 hover:text-red-500 z-50" 
             onclick="window.location.href='/'">
             <i class="fi fi-rr-cross-circle text-4xl"></i>
         </button>
+        <div class="absolute bottom-0 left-0 opacity-20 pointer-events-none">
+            <img class="w-full lg:w-1/2" src="{% static 'img/floral-1.png' %}" alt="">
+        </div>
 
         <!-- Cart Details and Summary -->
         <div class="mt-12 flex flex-col lg:flex-row gap-6">
@@ -48,11 +51,11 @@
                 <h3 class="text-xl font-semibold text-gray-200 mt-4">Grand Total: ${{ total_amount|floatformat:2 }}</h3>
 
                 <div class="mt-6 flex flex-col space-y-4">
-                    <button class="clear_cart bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600 z-50">
+                    <button class="clear_cart bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600">
                         <span>Clear Cart</span>
                         <i class="fi fi-rr-trash"></i>
                     </button>
-                    <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl flex justify-between items-center text-white hover:bg-yellow-600 z-50">
+                    <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl flex justify-between items-center text-white hover:bg-yellow-600">
                         <span>Proceed to Checkout</span>
                         <i class="fi fi-rr-credit-card"></i>
                     </button>
@@ -63,7 +66,6 @@
 </div>
 
 <style>
-  
     .cart-items {
         overflow: auto;
     }

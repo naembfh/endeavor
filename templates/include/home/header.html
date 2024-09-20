@@ -1,22 +1,20 @@
 {% load static %}
+{% load static %}
 <header id="navbar" class="bg-green-950 fixed w-full top-0 left-0 z-50">
-    <nav class="container flex items-center justify-between h-16 sm:h-20">
+    <nav class="container flex items-center justify-between h-28 sm:h-20">
         <div class="font-Lobster sm:text-2xl">Endeavor</div>
         <div id="nav-menu"
-            class="absolute top-0 left-[-100%] min-h[80vh] w-full bg-gray-950/8 backdrop-blur-sm flex items-center justify-center duration-300 overflow-hidden lg:static lg:min-h-fit lg:w-auto">
+            class="absolute top-0 left-[-100%] min-h-[80vh] w-full bg-green-950/80 backdrop-blur-sm flex items-center justify-center duration-300 lg:static lg:min-h-fit lg:w-auto lg:bg-transparent">
             <ul class="flex flex-col items-center gap-8 lg:flex-row">
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 <li><a href="{% url 'about' %}" class="nav-link">About</a></li>
                 <li><a href="{% url 'shop' %}" class="nav-link">Shop</a></li>
-                <li><a href="#review" class="nav-link">Review</a></li>
                 <li>
-                    <a href="{% url 'cart' %}" class="nav-link">
-                        <i class="fi fi-rr-shopping-cart relative">
-                            <span id="cart-badge" class="absolute -top-0 -left-4 bg-red-500 rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
-                        </i>
+                    <a href="{% url 'cart' %}" class="nav-link relative">
+                        <i class="fi fi-rr-shopping-cart text-2xl sm:text-3xl"></i>
+                        <span id="cart-badge" class="absolute -top-4 -right-2 transform translate-x-2 -translate-y-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs sm:text-sm flex items-center justify-center">0</span>
                     </a>
                 </li>
-                
             </ul>
             <div class="absolute bottom-0 -right-10 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-1.png' %}" alt="leaf_image" class="w-32">
@@ -24,9 +22,30 @@
             <div class="absolute -top-5 -left-5 rotate-90 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-2.png' %}" alt="leaf_image" class="w-32">
             </div>
-            <div class="text-xl text-white sm:text-3xl cursor-pointer z-50 lg:hidden">
-                <i class="fi fi-rr-line-width" id="hamburger"></i>
-            </div>
+        </div>
+        <div class="text-xl text-white sm:text-3xl cursor-pointer z-50 lg:hidden">
+            <i class="fi fi-rr-line-width" id="hamburger"></i>
         </div>
     </nav>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+
+    // Add event listener to the hamburger icon
+    hamburger.addEventListener('click', () => {
+        if (navMenu.classList.contains('left-[-100%]')) {
+            // Show the menu
+            navMenu.classList.remove('left-[-100%]');
+            navMenu.classList.add('left-0');
+        } else {
+            // Hide the menu
+            navMenu.classList.remove('left-0');
+            navMenu.classList.add('left-[-100%]');
+        }
+    });
+});
+
+</script>
