@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from .models import Plant, Review
@@ -6,6 +6,9 @@ import decimal
 import json
 from django.http import HttpRequest
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from .forms import ReviewForm
+from django.contrib import messages
 
 def index(request:HttpRequest):
     context = {
@@ -75,3 +78,21 @@ def shop_view(request: HttpRequest):
         'current_path': request.path,
     }
     return render(request, 'include/plants.html', context)
+
+@login_required
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        print(form)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user 
+            review.save()
+            messages.success(request, 'Your review has been submitted!')
+            return redirect('home')  
+        else:
+            messages.error(request, 'There was an error with your submission. Please try again.')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'include/home/home.html',)

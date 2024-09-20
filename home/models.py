@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.db.models import Avg
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -30,12 +31,22 @@ class Profile(models.Model):
 class Plant(models.Model):
     scientific_name = models.CharField(max_length=255)
     common_name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
     image = models.ImageField(upload_to='plants/')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
 
     def __str__(self):
         return self.common_name
+
+    def update_rating(self):
+        reviews = self.review_set.all()
+        if reviews.exists():
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            self.rating = round(average_rating or 0.0, 1) 
+        else:
+            self.rating = 0.0
+        self.save()
 
 
 class Review(models.Model):
@@ -47,3 +58,8 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.user.email} - {self.plant.common_name}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.plant.update_rating()
+
