@@ -1,5 +1,4 @@
 {% load static %}
-{% load static %}
 <header id="navbar" class="bg-green-950 fixed w-full top-0 left-0 z-50">
     <nav class="container flex items-center justify-between h-28 sm:h-20">
         <div class="font-Lobster sm:text-2xl">Endeavor</div>
@@ -15,10 +14,15 @@
                         <span id="cart-badge" class="absolute -top-4 -right-2 transform translate-x-2 -translate-y-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs sm:text-sm flex items-center justify-center">0</span>
                     </a>
                 </li>
+                {% if user.is_authenticated %}
+                    <li class=""><a href="{% url 'logout' %}" class="nav-link btn hover:text-green-500">Logout</a></li>
+                {% else %}
+                    <li class=""><a href="{% url 'login' %}" class="nav-link btn hover:text-green-500">Login</a></li>
+                {% endif %}
             </ul>
-            <div class="absolute bottom-0 -right-10 opacity-90 lg:hidden">
+            <!-- <div class="absolute bottom-0 -right-16 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-1.png' %}" alt="leaf_image" class="w-32">
-            </div>
+            </div> -->
             <div class="absolute -top-5 -left-5 rotate-90 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-2.png' %}" alt="leaf_image" class="w-32">
             </div>
@@ -31,21 +35,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
 
-    // Add event listener to the hamburger icon
-    hamburger.addEventListener('click', () => {
-        if (navMenu.classList.contains('left-[-100%]')) {
-            // Show the menu
-            navMenu.classList.remove('left-[-100%]');
-            navMenu.classList.add('left-0');
-        } else {
-            // Hide the menu
-            navMenu.classList.remove('left-0');
-            navMenu.classList.add('left-[-100%]');
-        }
+        // Add event listener to the hamburger icon
+        hamburger.addEventListener('click', () => {
+            if (navMenu.classList.contains('left-[-100%]')) {
+                // Show the menu
+                navMenu.classList.remove('left-[-100%]');
+                navMenu.classList.add('left-0');
+            } else {
+                // Hide the menu
+                navMenu.classList.remove('left-0');
+                navMenu.classList.add('left-[-100%]');
+            }
+        });
     });
-});
-
 </script>

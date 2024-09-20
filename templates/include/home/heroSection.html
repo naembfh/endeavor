@@ -1,37 +1,35 @@
 {% load static %}
-<section id="home" class="relative">
-    <div
-        class="w-64 h-64 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute top-1/2 left-1/2 transform translate-x-1/2 -translate-y-1/2">
+<section class="relative">
+    <div class="w-56 h-56 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute top-1/2 left-1/2 transform translate-x-1/2 -translate-y-1/2 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96">
     </div>
 
-    <div class="w-64 h-64 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute bottom-0 right-0">
+    <div class="w-56 h-56 bg-green-700 rounded-full blur-3xl -z-10 opacity-40 absolute bottom-0 right-0 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96">
     </div>
 
-    <div class="container">
+    <div class="container mx-auto px-4">
         <div class="flex flex-col items-center gap-5 lg:flex-row">
             <!-- Content -->
             <div class="w-full space-y-5 lg:w-1/2">
-                <h1><span class="text-yellow-500">Plants</span> make a <br>
-                    positive
-                    <span class="text-yellow-500">impact</span> on <br>
+                <h1 class="text-center lg:text-left text-lg sm:text-xl md:text-2xl">
+                    <span class="text-yellow-500">Plants</span> make a <br>
+                    positive <span class="text-yellow-500">impact</span> on <br>
                     your environment
                 </h1>
-                <p class="text-slate-300 font-Lobster">Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Distinctio fugiat eveniet, reprehenderit veritatis aut explicabo voluptatum ullam itaque
-                    tenetur numquam!W
+                <p class="text-slate-300 font-Lobster text-center lg:text-left text-sm sm:text-base">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio fugiat eveniet, reprehenderit veritatis aut explicabo voluptatum ullam itaque tenetur numquam!
                 </p>
                 <div class="flex flex-col gap-2 sm:flex-row md:gap-4 lg:pt-5 xl:pt-10">
                     <button class="btn"><span>Shop Now</span>
                         <i class="fi fi-rr-plant-care"></i></button>
-                        <button class="btn btn_outline">
-                            <a href="{% url 'about' %}" class="flex items-center gap-2">
-                                <span>Know More</span>
-                                <i class="ri-leaf-line"></i>  <!-- This is your icon class -->
-                            </a>
-                        </button>
+                    <button class="btn btn_outline">
+                        <a href="{% url 'about' %}" class="flex items-center gap-2">
+                            <span>Know More</span>
+                            <i class="ri-leaf-line"></i>
+                        </a>
+                    </button>
                 </div>
-                <p class="text-xs font-lobster text-slate-300">You will get 30-days free trial.</p>
-                <div class="flex items-center gap-5 text-lg lg:pt-10">
+                <p class="text-xs font-Lobster text-slate-300 text-center lg:text-left">You will get 30-days free trial.</p>
+                <div class="flex items-center gap-5 text-lg lg:pt-10 justify-center lg:justify-start">
                     <i class="fi fi-brands-facebook text-slate-300 hover:text-yellow-500 duration-500 cursor-pointer text-base"></i>
                     <i class="fi fi-brands-instagram text-slate-300 hover:text-yellow-500 duration-500 cursor-pointer text-base"></i>
                 </div>
@@ -39,16 +37,16 @@
 
             <!-- Image -->
             <div class="w-full relative lg:w-1/2">
-                <img src="{% static 'img/home.png' %}" alt="" srcset="">
+                <img src="{% static 'img/home.png' %}" alt="" class="w-full h-auto">
                 <!-- Leaf -->
-                <div class="absolute -top-10 right-0 opacity-30 animate-movingY xl:top-5">
-                    <i class="fi fi-rr-leaf-maple text-6xl text-yellow-500"></i>
+                <div class="absolute -top-8 right-0 opacity-30 animate-movingY sm:-top-10 md:-top-12 xl:top-5">
+                    <i class="fi fi-rr-leaf-maple text-5xl sm:text-6xl text-yellow-500"></i>
                 </div>
                 <div class="absolute bottom-0 left-0 opacity-30 xl:bottom-11 animate-rotating">
-                    <i class="fi fi-rr-three-leaf-clover text-6xl text-yellow-500"></i>
+                    <i class="fi fi-rr-three-leaf-clover text-5xl sm:text-6xl text-yellow-500"></i>
                 </div>
-                <div class="absolute -top-10 left-5 opacity-30 lg:block animate-scalingUp">
-                    <i class="fi fi-rr-plant-growth text-6xl text-yellow-500"></i>
+                <div class="absolute -top-8 left-5 opacity-30 lg:block animate-scalingUp">
+                    <i class="fi fi-rr-plant-growth text-5xl sm:text-6xl text-yellow-500"></i>
                 </div>
             </div>
         </div>

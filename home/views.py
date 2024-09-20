@@ -9,6 +9,10 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import send_mail
+from django.contrib.auth import logout
 
 def index(request:HttpRequest):
     context = {
@@ -96,3 +100,64 @@ def add_review(request):
         form = ReviewForm()
 
     return render(request, 'include/home/home.html',)
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Welcome back, {user.username}! You have successfully logged in.')
+            return redirect('home')  
+        else:
+            messages.error(request, 'The email or password you entered is incorrect. Please try again.')
+
+    return render(request, 'include/auth/login.html')
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                email_template_name='password_reset_email.html',
+            )
+            messages.success(request, 'We have sent you an email to reset your password. Please check your inbox.')
+            return redirect('login')
+        else:
+            messages.error(request, 'Invalid email address. Please enter a valid email associated with your account.')
+
+    return render(request, 'include/auth/forgot_password.html')
+
+
+
+def register_view(request):
+    User = get_user_model()
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Check if email or username already exists
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already taken. Please choose a different one.')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already associated with an account. Please use another email.')
+        else:
+            # Create and authenticate the new user
+            user = User.objects.create_user(username=username, email=email, password=password)
+            login(request, user)
+            messages.success(request, f'Welcome {user.username}! Your account has been created successfully, and you are now logged in.')
+            return redirect('home')
+
+    return render(request, 'include/auth/register.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('home')
+
