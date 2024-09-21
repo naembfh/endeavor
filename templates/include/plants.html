@@ -8,8 +8,8 @@
         
         <!-- Conditionally show search bar only on shop page -->
         {% if current_path == '/shop/' %}
-        <div class="w-full flex justify-center my-5">
-            <input type="text" placeholder="Search plants..." class="w-1/2 p-2 border border-gray-300 rounded">
+        <div class="w-full flex justify-center md:mt-5 md:mb-16 mb-20">
+            <input type="text" id="search" placeholder="Search plants..." class="w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-gray-100 text-yellow-500">
         </div>
         {% endif %}
     </div>

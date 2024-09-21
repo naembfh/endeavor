@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpRequest
-from .models import Plant, Review, Order
+from .models import Plant, Review, Profile
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import ReviewForm
+from .forms import ReviewForm, ProfileForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.conf import settings
 import json
-from decimal import Decimal
-import stripe
+
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib import messages
 from django.contrib.auth import logout, get_user_model, login
@@ -167,3 +166,23 @@ def cart_view(request):
     }
 
     return render(request, 'include/cart/cart.html', context)
+
+@login_required
+def create_or_update_profile(request):
+    try:
+        # Check if the user already has a profile
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        profile = None
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'profileCreate.html', {'form': form})
