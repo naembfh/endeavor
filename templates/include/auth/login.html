@@ -37,6 +37,7 @@
 
                 <form method="POST" action="{% url 'login' %}" class="w-full space-y-6">
                     {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
                     <div class="space-y-4">
                         <!-- Email Field -->
                         <div>

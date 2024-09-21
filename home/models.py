@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models import Avg
+import json
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -27,7 +28,7 @@ class Profile(models.Model):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
         return "https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png?20180610185859"
-    
+
 class Plant(models.Model):
     scientific_name = models.CharField(max_length=255)
     common_name = models.CharField(max_length=255)
@@ -43,11 +44,10 @@ class Plant(models.Model):
         reviews = self.review_set.all()
         if reviews.exists():
             average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-            self.rating = round(average_rating or 0.0, 1) 
+            self.rating = round(average_rating or 0.0, 1)
         else:
             self.rating = 0.0
         self.save()
-
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -63,3 +63,21 @@ class Review(models.Model):
         super().save(*args, **kwargs)
         self.plant.update_rating()
 
+class Order(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ('card', 'Card'),
+        ('cash', 'Cash'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    cart_data = models.TextField()
+    pay_method = models.CharField(max_length=50, default='cash') 
+
+    def __str__(self):
+        return f'Order {self.id} by {self.user.email}'
+
+  
+    def get_cart(self):
+        return json.loads(self.cart_data) 

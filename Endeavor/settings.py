@@ -9,12 +9,19 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import environ
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='your_default_secret_key')
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY', default='your_default_public_key')
 
 
 # Quick-start development settings - unsuitable for production
@@ -46,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'billing',
 ]
 
 TAILWIND_APP_NAME = 'theme'

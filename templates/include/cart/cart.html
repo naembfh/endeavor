@@ -21,7 +21,7 @@
                     <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-24 h-24 object-cover rounded-md" />
                     <div class="flex-grow mx-4">
                         <h3 class="text-lg font-semibold text-gray-300 truncate">{{ item.name }}</h3>
-                        <p class="text-lg font-bold text-gray-300">${{ item.price }}</p>
+                        <p class="text-lg font-bold text-gray-300">{{ item.price }} RM</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <!-- Minus Button -->
@@ -46,19 +46,31 @@
             <div class="w-full lg:w-2/5 bg-white bg-opacity-20 backdrop-blur-lg shadow-md rounded-lg p-6 flex flex-col max-h-[25rem] lg:max-h-[25rem] lg:justify-center overflow-hidden">
                 <h1 class="text-3xl font-bold text-gray-200">Order Summary</h1>
                 <p class="text-sm text-gray-300 mt-2">Items: {{ total_items }}</p>
-                <p class="text-sm text-gray-300 mt-2">Subtotal: ${{ subtotal|floatformat:2 }}</p>
-                <p class="text-sm text-gray-300 mt-2">Tax: ${{ tax_amount|floatformat:2 }}</p>
-                <h3 class="text-xl font-semibold text-gray-200 mt-4">Grand Total: ${{ total_amount|floatformat:2 }}</h3>
+                <p class="text-sm text-gray-300 mt-2">Subtotal: {{ subtotal|floatformat:2 }} RM</p>
+                <p class="text-sm text-gray-300 mt-2">Tax: {{ tax_amount|floatformat:2 }} RM</p>
+                <h3 class="text-xl font-semibold text-gray-200 mt-4">Grand Total: {{ total_amount|floatformat:2 }} RM</h3>
 
                 <div class="mt-6 flex flex-col space-y-4">
-                    <button class="clear_cart bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600">
+                    <button class="cart-action-button clear-cart bg-red-500 px-3 py-2 text-white rounded-md w-full text-xs flex justify-between items-center hover:bg-red-600">
                         <span>Clear Cart</span>
                         <i class="fi fi-rr-trash"></i>
                     </button>
-                    <button class="bg-yellow-500 px-2 py-1 rounded-sm text-xl flex justify-between items-center text-white hover:bg-yellow-600">
-                        <span>Proceed to Checkout</span>
-                        <i class="fi fi-rr-credit-card"></i>
-                    </button>
+                    
+                    {% if user.is_authenticated %}
+                        <button class="cart-action-button pay-cash bg-green-500 px-3 py-2 rounded-md text-xs flex justify-between items-center text-white hover:bg-green-600">
+                            <span>Pay by Cash</span>
+                            <i class="fi fi-rr-coins"></i>
+                        </button>
+                        
+                        <button id="pay-card" class="cart-action-button pay-card bg-yellow-500 px-3 py-2 rounded-md text-xs flex justify-between items-center text-white hover:bg-yellow-600">
+                            <span>Pay by Card</span>
+                            <i class="fi fi-rr-credit-card"></i>
+                        </button>
+                    {% else %}
+                        <p>Please <a href="{% url 'login' %}?next={{ request.path }}">login</a> to pay.</p>
+                    {% endif %}
+
+                    
                 </div>
             </div>
         </div>
@@ -81,7 +93,31 @@
 </style>
 
 <script>
+
+</script>
+
+
+
+<script>
     document.addEventListener('DOMContentLoaded', function () {
+        const stripePublicKey = '{{ STRIPE_PUBLIC_KEY }}';
+        console.log(stripePublicKey)
+        document.getElementById('pay-card').addEventListener('click', async () => {
+        console.log('click')
+        console.log(getCookie('cart'))
+        const response = await fetch('/create-checkout-session/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // Make sure to get CSRF token if you're using CSRF protection
+            },
+            body: JSON.stringify(getCookie('cart')),
+        });
+        
+        const sessionId = await response.json();
+        const stripe = Stripe(stripePublicKey);
+        stripe.redirectToCheckout({ sessionId: sessionId.id });
+    });
      
         function setCookie(name, value, days) {
             let expires = "";
@@ -161,7 +197,7 @@
         });
 
       
-        document.querySelector('.clear_cart').addEventListener('click', function () {
+        document.querySelector('.clear-cart').addEventListener('click', function () {
             clearCookie('cart'); 
             updateCartBadge(); 
             location.reload();
