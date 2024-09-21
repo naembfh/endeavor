@@ -15,14 +15,20 @@
                     </a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class=""><a href="{% url 'logout' %}" class="nav-link btn hover:text-green-500">Logout</a></li>
+                <li class="relative flex items-center">
+                    <img src="{{ user.profile.get_profile_image }}" alt="Profile" class="w-8 h-8 rounded-full cursor-pointer" id="profile-image" />
+                    <div id="profile-dropdown" class="absolute -right-10 md:right-0 top-12 md:top-10 mt-2 w-48 border border-gray-300 rounded-lg p-4 shadow-md bg-green-950 bg-opacity-70 backdrop-blur-lg hidden">
+                        <ul class="py-2">
+                            <li><a href="{% url 'my_orders' %}" class="nav-link">My Orders</a></li>
+                            <li><a href="#" class="nav-link">Profile</a></li>
+                            <li><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+                        </ul>
+                    </div>
+                </li>
                 {% else %}
-                    <li class=""><a href="{% url 'login' %}" class="nav-link btn hover:text-green-500">Login</a></li>
+                <li><a href="{% url 'login' %}" class="nav-link btn hover:text-green-500">Login</a></li>
                 {% endif %}
             </ul>
-            <!-- <div class="absolute bottom-0 -right-16 opacity-90 lg:hidden">
-                <img src="{% static 'img/leaf-1.png' %}" alt="leaf_image" class="w-32">
-            </div> -->
             <div class="absolute -top-5 -left-5 rotate-90 opacity-90 lg:hidden">
                 <img src="{% static 'img/leaf-2.png' %}" alt="leaf_image" class="w-32">
             </div>
@@ -37,18 +43,34 @@
     document.addEventListener('DOMContentLoaded', function () {
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('nav-menu');
+        const profileImage = document.getElementById('profile-image');
+        const dropdown = document.getElementById('profile-dropdown');
 
         // Add event listener to the hamburger icon
         hamburger.addEventListener('click', () => {
             if (navMenu.classList.contains('left-[-100%]')) {
-                // Show the menu
                 navMenu.classList.remove('left-[-100%]');
                 navMenu.classList.add('left-0');
             } else {
-                // Hide the menu
                 navMenu.classList.remove('left-0');
                 navMenu.classList.add('left-[-100%]');
             }
         });
+
+        // Show dropdown on hover
+        profileImage.addEventListener('mouseenter', () => {
+            dropdown.classList.remove('hidden');
+        });
+
+        profileImage.addEventListener('click', () => {
+            dropdown.classList.toggle('hidden');
+        });
+
+        // Close the dropdown if clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                dropdown.classList.add('hidden');
+            }
+        };
     });
 </script>
