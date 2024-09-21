@@ -106,3 +106,88 @@ def order_confirmation_view(request):
 def cancel_view(request):
     # Redirect to a cancel page or back to cart
     return render(request, 'include/stripe/cancel.html')
+
+def pay_by_cash_view(request):
+    cart_cookie = request.COOKIES.get('cart', '{}')
+    cart = json.loads(cart_cookie)
+
+    subtotal = Decimal('0.00')
+    tax_rate = Decimal('0.07')  # 7% tax rate
+    total_amount = Decimal('0.00')
+
+    if request.user.is_authenticated:
+        for plant_id, quantity in cart.items():
+            try:
+                plant = Plant.objects.get(id=plant_id)
+                subtotal += plant.price * quantity
+            except Plant.DoesNotExist:
+                continue 
+
+        # Calculate tax amount and total amount
+        tax_amount = subtotal * tax_rate
+        total_amount = subtotal + tax_amount
+
+        # Save order to the database with payment method as 'cash'
+        order = Order.objects.create(
+            user=request.user,
+            total_amount=total_amount,
+            cart_data=json.dumps(cart), 
+            pay_method='cash' 
+        )
+        
+        # Clear the cart cookie after order is created
+        response = redirect('order_confirmation') 
+        response.delete_cookie('cart')
+        return response
+    else:
+        return redirect('login')
+
+def my_orders_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    current_orders = Order.objects.filter(user=request.user, isDelivery=False)
+    past_orders = Order.objects.filter(user=request.user, isDelivery=True)
+
+    current_orders_details = []
+    for order in current_orders:
+        cart = order.get_cart()
+        products = []
+        for plant_id, quantity in cart.items():
+            try:
+                plant = Plant.objects.get(id=plant_id)
+                products.append({
+                    'name': plant.common_name,
+                    'price': float(plant.price),
+                    'quantity': quantity,
+                    'total_price': float(plant.price * quantity),
+                    'image_url': plant.image.url
+                })
+            except Plant.DoesNotExist:
+                continue
+        current_orders_details.append({'order': order, 'products': products})
+
+    past_orders_details = []
+    for order in past_orders:
+        cart = order.get_cart()
+        products = []
+        for plant_id, quantity in cart.items():
+            try:
+                plant = Plant.objects.get(id=plant_id)
+                products.append({
+                    'name': plant.common_name,
+                    'price': float(plant.price),
+                    'quantity': quantity,
+                    'total_price': float((plant.price * quantity)),
+                    'image_url': plant.image.url  
+                })
+            except Plant.DoesNotExist:
+                continue
+        past_orders_details.append({'order': order, 'products': products})
+
+    context = {
+        'current_orders_details': current_orders_details,
+        'past_orders_details': past_orders_details,
+    }
+    return render(request, 'include/myOrders.html', context)
+

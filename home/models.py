@@ -74,6 +74,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     cart_data = models.TextField()
     pay_method = models.CharField(max_length=50, default='cash') 
+    isDelivery = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Order {self.id} by {self.user.email}'
