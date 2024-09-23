@@ -81,31 +81,9 @@
             </div>
         </div>
     </div>
-    {% if messages %}
-    <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50 max-w-sm w-full sm:max-w-xs">
-        {% for message in messages %}
-            <div class="toast {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} bg-gray-100/80 text-green-500 font-Lobster px-4 py-3 rounded shadow-md transition-opacity duration-300 opacity-100 backdrop-blur-md flex items-center space-x-2">
-                <i class="fi fi-rr-clipboard-check text-xl"></i>
-                <span class="flex-1">{{ message }}</span>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toasts = document.querySelectorAll('.toast');
-
-        toasts.forEach((toast) => {
-            setTimeout(() => {
-                toast.classList.add('opacity-0'); 
-                setTimeout(() => {
-                    toast.remove(); 
-                }, 300);  
-            }, 3000);  
-        });
-    });
-</script>
+   
+    {% include "include/toast/djangoToast.html" %}
+    {% include "include/toast/customToast.html" %}
 </body>
 
 </html>

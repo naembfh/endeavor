@@ -57,15 +57,20 @@
             }
         });
 
+       // Check if both elements exist before adding event listeners
+    if (profileImage && dropdown) {
         // Show dropdown on hover
         profileImage.addEventListener('mouseenter', () => {
             dropdown.classList.remove('hidden');
         });
 
+        // Toggle dropdown visibility on click
         profileImage.addEventListener('click', () => {
             dropdown.classList.toggle('hidden');
         });
-
+    } else {
+        console.log('Profile image or dropdown not found');
+    }
         // Close the dropdown if clicking outside
         window.onclick = function(event) {
             if (!event.target.closest('.relative')) {

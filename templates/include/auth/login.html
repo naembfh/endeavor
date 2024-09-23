@@ -3,18 +3,13 @@
 <html lang="en">
 
 <head>
-    <title>Django Tailwind - Login</title>
+    <title>Endeavor - Login</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% tailwind_css %}
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-brands/css/uicons-brands.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-chubby/css/uicons-solid-chubby.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body>
@@ -38,6 +33,7 @@
                 <form method="POST" action="{% url 'login' %}" class="w-full space-y-6">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.GET.next }}">
+                    
                     <div class="space-y-4">
                         <!-- Email Field -->
                         <div>
@@ -45,6 +41,9 @@
                             <div class="mt-1">
                                 <input id="email" name="email" type="email" required autofocus placeholder="you@example.com"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-gray-100 placeholder:text-yellow-500 text-yellow-500">
+                                {% for error in form.email.errors %}
+                                    <p class="text-red-500 text-sm">{{ error }}</p>
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -54,10 +53,13 @@
                             <div class="mt-1">
                                 <input id="password" name="password" type="password" required placeholder="Enter your password"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-gray-100 placeholder:text-yellow-500 text-yellow-500">
+                                {% for error in form.password.errors %}
+                                    <p class="text-red-500 text-sm">{{ error }}</p>
+                                {% endfor %}
                             </div>
                         </div>
 
-                        <!-- Error Message (optional) -->
+                        <!-- Non-field Errors -->
                         {% if form.non_field_errors %}
                         <div class="bg-red-500/20 text-red-700 p-3 rounded-lg">
                             {{ form.non_field_errors }}
@@ -83,6 +85,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Toast Notifications -->
+    {% include "include/toast/djangoToast.html" %}
+    {% include "include/toast/customToast.html" %}
+
+ 
+
 </body>
 
 </html>

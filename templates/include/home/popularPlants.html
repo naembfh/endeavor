@@ -1,8 +1,8 @@
 {% load static %}
 <section class="bg-green-900">
     <div class="flex flex-col items-center gap-3 text-center mb-10 md:mb-20">
-        <h2 class="title">Your Choice Plant</h2>
-        <p class="max-w-2xl">Follow instructions for more</p>
+        <h2 class="title">Your Popular Plant</h2>
+        <p class="max-w-2xl">Discover care tips and instructions to help your plants thrive!</p>
         
         <!-- Conditionally show search bar only on shop page -->
         {% if current_path == '/shop/' %}
@@ -12,7 +12,7 @@
         {% endif %}
     </div>
 
-    <div class="container w-full grid grid-cols-1 gap-x-8 gap-y-36 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div class="container w-full mt-28 md:mt-32 grid grid-cols-1 gap-x-8 gap-y-36 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {% for plant in plants %}
         <div class="card bg-green-950 p-10 pt-24 rounded-md relative">
             <img class="w-56 absolute -top-5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 duration-500" src="{{ plant.image.url }}" alt="{{ plant.common_name }}">
@@ -231,7 +231,6 @@ stars.forEach(star => {
 
                
                 updateCartBadge();
-
 
             // Show success toast message
             showToast('Added to cart successfully!');

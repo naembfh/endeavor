@@ -19,11 +19,18 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 
 def index(request: HttpRequest):
+    # Get the top 4 plants with the highest ratings
+    top_plants = Plant.objects.order_by('-rating')[:4]
+    
+    # Get the top 5 most recent reviews
+    recent_reviews = Review.objects.order_by('-created_at')[:5]
+    
     context = {
-        'plants': Plant.objects.all(),
-        'reviews': Review.objects.all(),
+        'plants': top_plants,
+        'reviews': recent_reviews,
         'current_path': request.path,
     }
+    
     return render(request, 'include/home/home.html', context)
 
 def about(request):

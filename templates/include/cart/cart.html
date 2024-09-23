@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="fixed top-16 left-4 w-full md:w-4/5 lg:w-2/3 xl:w-2/3 max-h-screen mb-20 z-40"> <!-- Lower z-index -->
+<div class="mt-5 md:mt-0 md:fixed md:top-16 md:left-4 w-full md:w-4/5 lg:w-2/3 xl:w-2/3 max-h-screen mb-20 z-40"> <!-- Lower z-index -->
     <div class="w-full transform translate-y-16 transition-transform duration-300 border border-gray-300 rounded-lg p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
         <button 
             class="absolute top-4 right-4 text-gray-300 hover:text-red-500 z-50" 
@@ -17,11 +17,11 @@
             <!-- Cart Items -->
             <div class="w-full lg:w-3/5 space-y-6 max-h-[calc(100vh-10rem)] cart-items">
                 {% for item in cart_items %}
-                <div class="flex items-center justify-between border border-gray-300 rounded-lg p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
-                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-24 h-24 object-cover rounded-md" />
-                    <div class="flex-grow mx-4">
-                        <h3 class="text-lg font-semibold text-gray-300 truncate">{{ item.name }}</h3>
-                        <p class="text-lg font-bold text-gray-300">{{ item.price }} RM</p>
+                <div class="flex items-center justify-between border border-gray-300 rounded-lg p-2 md:p-4 shadow-md bg-white bg-opacity-20 backdrop-blur-lg">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-md" />
+                    <div class="flex-grow mx-2 md:mx-4">
+                        <h3 class="text-sm md:text-lg font-semibold text-gray-300 truncate">{{ item.name }}</h3>
+                        <p class="text-sm md:text-lg font-bold text-gray-300">{{ item.price }} RM</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <!-- Minus Button -->
@@ -34,7 +34,7 @@
                             <i class="fi fi-rr-add"></i>
                         </button>
                         <!-- Trash Button -->
-                        <button class="bg-red-500 px-2 py-1 rounded-sm text-xl ml-2 hover:bg-red-600 trash-btn" data-id="{{ item.id }}">
+                        <button class="bg-red-500 px-2 py-1 rounded-lg text-xl ml-2 hover:bg-red-600 trash-btn" data-id="{{ item.id }}">
                             <i class="fi fi-rr-trash"></i>
                         </button>
                     </div>
@@ -96,22 +96,30 @@
         const stripePublicKey = '{{ STRIPE_PUBLIC_KEY }}';
         console.log(stripePublicKey);
         
-        document.getElementById('pay-card').addEventListener('click', async () => {
+    // Check if the pay-card button exists before trying to add an event listener
+    const payCardButton = document.getElementById('pay-card');
+    if (payCardButton) {
+        payCardButton.addEventListener('click', async () => {
             console.log('click');
             console.log(getCookie('cart'));
+
+            // Fetch checkout session
             const response = await fetch('/create-checkout-session/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'), // CSRF token
+                    'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is passed
                 },
                 body: JSON.stringify(getCookie('cart')),
             });
-            
+
             const sessionId = await response.json();
             const stripe = Stripe(stripePublicKey);
             stripe.redirectToCheckout({ sessionId: sessionId.id });
         });
+    } else {
+        console.log('Pay by Card button not found');
+    }
         
         function setCookie(name, value, days) {
             let expires = "";

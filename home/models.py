@@ -27,7 +27,7 @@ class Profile(models.Model):
     def get_profile_image(self):
         if self.img and hasattr(self.img, 'url'):
             return self.img.url
-        return "https://upload.wikimedia.org/wikipedia/commons/7/72/Default-welcomer.png?20180610185859"
+        return settings.STATIC_URL + 'img/pp.jpg'
 
 class Plant(models.Model):
     scientific_name = models.CharField(max_length=255)

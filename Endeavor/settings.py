@@ -33,16 +33,20 @@ SECRET_KEY = 'django-insecure-rwdw-z8#$9=wyz04-xa9r=&ut25)y^o2sx-sknq=2%y)gse%sj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['endeavor-0mz9.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['endeavor-0mz9.onrender.com', 'localhost', '127.0.0.1', '192.168.255.21']
+
 CSRF_TRUSTED_ORIGINS = [
     'https://endeavor-0mz9.onrender.com',
     'http://localhost',
     'http://127.0.0.1',
+    'http://192.168.255.21:8000'
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'jazzmin',
+    'django.contrib.humanize',
     'tailwind',
     'theme',
     'django_browser_reload',
@@ -153,3 +157,87 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# Custom Admin Settings
+# Custom Admin Settings
+JAZZMIN_SETTINGS = {
+    "site_title": "Endeavor Admin",
+    "site_header": "Endeavor",
+    "site_brand": "Endeavor Marketplace",
+    "site_icon": "img/favicon.ico", 
+    "site_logo": "img/pp.jpg",  
+    "welcome_sign": "Welcome to Endeavor Admin",
+    "copyright": "Endeavor",
+    "user_avatar": "img/pp.jpg",  
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "home.User"},  
+        {"model": "home.Plant"},  
+        {"model": "home.Order"}, 
+        {"app": "home"},  
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "order_with_respect_to": [
+        "home.User",
+        "home.Profile",
+        "home.Plant",
+        "home.Review",
+        "home.Order",
+    ],
+    "icons": {
+        "admin.LogEntry": "fas fa-file",
+
+        "home.User": "fas fa-user",
+        "home.Profile": "fas fa-address-card",
+        "home.Plant": "fas fa-leaf",
+        "home.Review": "fas fa-star",
+        "home.Order": "fas fa-shopping-cart",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-arrow-circle-right",
+    "related_modal_active": False,
+    
+    "custom_js": None,
+    "show_ui_builder": True,
+    
+    "changeform_format": "horizontal_tabs",  
+    "changeform_format_overrides": {
+        "home.User": "collapsible", 
+        "home.Order": "vertical_tabs", 
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": True,
+    "brand_small_text": False,
+    "brand_colour": "navbar-teal",
+    "accent": "accent-olive",
+    "navbar": "navbar-teal navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-light-lime",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "minty",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
