@@ -1,27 +1,29 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="container mx-auto mt-24 bg-white rounded-md bg-opacity-20 backdrop-blur-lg">
+<div class="container mx-auto mt-24 bg-white rounded-md bg-opacity-20 backdrop-blur-lg p-6">
 
+    <!-- Decorative Image -->
     <div class="absolute -top-8 -right-12 opacity-50">
         <img class="w-40 md:w-52 xl:w-64" src="{% static 'img/leaf-4.png' %}" alt="">
     </div>
 
-    <h1 class="text-3xl font-bold pt-6 mb-6">My Orders</h1>
+    <!-- Page Title -->
+    <h1 class="text-3xl font-bold text-yellow-500 mb-6">My Orders</h1>
 
-    <!-- Buttons to toggle between current and past orders -->
+    <!-- Toggle Buttons for Current and Past Orders -->
     <div class="flex space-x-4 mb-6">
-        <button id="current-orders-btn" class="btn">Current Orders</button>
-        <button id="past-orders-btn" class="btn">Past Orders</button>
+        <button id="current-orders-btn" class="py-2 px-6 bg-green-900 hover:bg-yellow-500 text-white rounded-lg shadow-md transition">Current Orders</button>
+        <button id="past-orders-btn" class="py-2 px-6 bg-green-900 hover:bg-yellow-500 text-white rounded-lg shadow-md transition">Past Orders</button>
     </div>
 
-    <!-- Current Orders Table -->
+    <!-- Current Orders Section -->
     <div id="current-orders-section">
         <h2 class="text-2xl text-yellow-500 font-semibold mb-4">Current Orders</h2>
         {% if current_orders_details %}
-            <div class="overflow-x-auto relative">
+            <div class="overflow-x-auto">
                 <table class="min-w-full text-left border-collapse mb-10">
-                    <thead class="bg-green-900">
+                    <thead class="bg-green-900 text-yellow-500">
                         <tr>
                             <th class="px-6 py-3 border-b">Order ID</th>
                             <th class="px-6 py-3 border-b">Total Amount (RM)</th>
@@ -32,7 +34,7 @@
                     </thead>
                     <tbody class="bg-white text-gray-700">
                         {% for order_detail in current_orders_details %}
-                            <tr class="hover:bg-gray-50 text-center transition">
+                            <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-2 border">{{ order_detail.order.id }}</td>
                                 <td class="px-6 py-2 border">{{ order_detail.order.total_amount }}</td>
                                 <td class="px-6 py-2 border">{{ order_detail.order.created_at|date:"M. d, Y, g:i a" }}</td>
@@ -50,13 +52,13 @@
         {% endif %}
     </div>
 
-    <!-- Past Orders Table (Initially hidden) -->
+    <!-- Past Orders Section (Initially hidden) -->
     <div id="past-orders-section" class="hidden">
         <h2 class="text-2xl text-yellow-500 font-semibold mb-4">Past Orders</h2>
         {% if past_orders_details %}
-            <div class="overflow-x-auto relative">
+            <div class="overflow-x-auto">
                 <table class="min-w-full text-left border-collapse mb-10">
-                    <thead class="bg-green-900">
+                    <thead class="bg-green-900 text-yellow-500">
                         <tr>
                             <th class="px-6 py-3 border-b">Order ID</th>
                             <th class="px-6 py-3 border-b">Total Amount (RM)</th>
@@ -67,7 +69,7 @@
                     </thead>
                     <tbody class="bg-white text-gray-700">
                         {% for order_detail in past_orders_details %}
-                            <tr class="hover:bg-gray-50 text-center transition">
+                            <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-2 border">{{ order_detail.order.id }}</td>
                                 <td class="px-6 py-2 border">{{ order_detail.order.total_amount }}</td>
                                 <td class="px-6 py-2 border">{{ order_detail.order.created_at|date:"M. d, Y, g:i a" }}</td>
@@ -86,9 +88,11 @@
     </div>
 
     <!-- Order Details Modal -->
-    <div id="order-details-modal" class="fixed inset-0 flex items-center justify-center bg-green-500 bg-opacity-10 backdrop-blur-md hidden">
-        <div class="w-full max-w-lg relative border border-gray-300 rounded-lg p-4 shadow-md bg-green-200 bg-opacity-20 backdrop-blur-lg">
-            <button class="absolute top-4 right-4 text-gray-300 hover:text-red-700" onclick="hideOrderDetailsModal()"> <i class="fi fi-rr-cross-circle text-4xl"></i></button>
+    <div id="order-details-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-green-900 bg-opacity-70 backdrop-blur-lg hidden">
+        <div class="w-full max-w-lg relative border border-gray-300 rounded-lg mt-96 p-4 shadow-md bg-green-100 bg-opacity-40 backdrop-blur-lg max-h-[90vh] overflow-y-auto">
+            <button class="absolute top-4 right-4 text-yellow-500 hover:text-red-500" onclick="hideOrderDetailsModal()"> 
+                <i class="fi fi-rr-cross-circle text-4xl"></i>
+            </button>
             <h2 class="text-2xl font-bold mb-4 text-yellow-500">Order Details</h2>
             <ul id="order-details-list" class="text-gray-700 space-y-2">
                 <!-- The plant details will be injected here via JavaScript -->
@@ -111,34 +115,34 @@
 
     // Show the modal with order details
     function showOrderDetailsModal(orderId) {
-    const orderDetails = {
-        {% for order_detail in current_orders_details %}
-        {{ order_detail.order.id }}: {{ order_detail.products|safe }} ,
-        {% endfor %}
-        {% for order_detail in past_orders_details %}
-        {{ order_detail.order.id }}: {{ order_detail.products|safe }} ,
-        {% endfor %}
-    };
-    
-    const products = orderDetails[orderId] || [];
-    const detailsList = document.getElementById('order-details-list');
-    detailsList.innerHTML = '';
+        const orderDetails = {
+            {% for order_detail in current_orders_details %}
+            {{ order_detail.order.id }}: {{ order_detail.products|safe }} ,
+            {% endfor %}
+            {% for order_detail in past_orders_details %}
+            {{ order_detail.order.id }}: {{ order_detail.products|safe }} ,
+            {% endfor %}
+        };
+        
+        const products = orderDetails[orderId] || [];
+        const detailsList = document.getElementById('order-details-list');
+        detailsList.innerHTML = '';
 
-    products.forEach(function(product) {
-        const li = document.createElement('li');
-        li.className = "flex items-center justify-between border border-gray-300 rounded-lg p-4 shadow-md backdrop-blur-lg mb-2"; // Added classes for styling
-        li.innerHTML = `
-            <img src="${product.image_url}" alt="${product.name}" class="w-24 h-24 object-cover rounded-md" />
-            <div class="flex-grow mx-4">
-                <h3 class="text-lg text-yellow-500 font-semibold truncate">${product.name}</h3>
-                <p class="text-lg font-bold text-yellow-500">${product.total_price} RM x Quantity (${product.quantity})</p>
-            </div>
-        `;
-        detailsList.appendChild(li);
-    });
+        products.forEach(function(product) {
+            const li = document.createElement('li');
+            li.className = "flex items-center justify-between border border-gray-300 rounded-lg p-4 shadow-md backdrop-blur-lg mb-2"; // Added classes for styling
+            li.innerHTML = `
+                <img src="${product.image_url}" alt="${product.name}" class="w-24 h-24 object-cover rounded-md" />
+                <div class="flex-grow mx-4">
+                    <h3 class="text-lg text-yellow-500 font-semibold truncate">${product.name}</h3>
+                    <p class="text-lg font-bold text-yellow-500">${product.total_price} RM x Quantity (${product.quantity})</p>
+                </div>
+            `;
+            detailsList.appendChild(li);
+        });
 
-    document.getElementById('order-details-modal').classList.remove('hidden');
-}
+        document.getElementById('order-details-modal').classList.remove('hidden');
+    }
 
     // Hide the modal
     function hideOrderDetailsModal() {
@@ -147,15 +151,13 @@
 </script>
 
 <style>
-  
     .overflow-x-auto::-webkit-scrollbar {
-        display: none; 
+        display: none;
     }
     .overflow-x-auto {
-        -ms-overflow-style: none; 
-        scrollbar-width: none; 
-        overflow-x: auto; 
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        overflow-x: auto;
     }
 </style>
-
 {% endblock %}
